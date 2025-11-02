@@ -147,6 +147,7 @@ const checkGameOver = (newHead, key) => {
 
 reset.addEventListener('click', resetGame);
 pause.addEventListener('click', pauseGame);
+restart.addEventListener('click', restartGame);
 
 
 
