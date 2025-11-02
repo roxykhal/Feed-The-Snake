@@ -3,8 +3,7 @@
 let gameOver = false;
 let gameStarted = false;
 let score = 0;
-let timerStarted = false;
-let winTimer;
+let paused = false;
 
 
 /*------------------------ Cached Element References ------------------------*/
@@ -12,7 +11,8 @@ const reset = document.querySelector("#resetButton");
 const pause = document.querySelector("#pauseButton");
 const scoreCount = document.querySelector("#score");
 const gameMessage = document.querySelector('#message');
-const timerMessage = document.querySelector('#timerMessage')
+const restart = document.querySelector('#restartGame');
+
 // const direction = document.querySelectorAll('#id');
 
 //Select gameGrid for Html, grid represents container where all game cells are placed 
@@ -46,22 +46,12 @@ let snake = [randomSnake];
 let foodIndex = randomFood;
 let emptyCells = [];
 
-const youWin = () => {
-    timerMessage.classList.remove("hidden");
-    console.log('you win');
-    //alert('you win');
-}
-
 
 
 //keydown on the randomSnake event so that we can move it once initialised
 
 document.addEventListener('keydown', (event) => {
 
-    if(!timerStarted) {
-        timerStarted = true;
-        winTimer = setTimeout(youWin, 30000);
-    }
 
     if (gameOver) return; // don't move if game is over
 
@@ -83,10 +73,10 @@ document.addEventListener('keydown', (event) => {
         }
 
 
-    if (checkGameOver(newHead)) {
+    if (checkGameOver(newHead, event.key)) {
         gameOver = true;
         gameMessage.classList.remove("hidden");
-        return
+        return;
     }
     
         //We always move the head forward in the game onto the next square, only if we don't eat we remove the tail. 
@@ -100,7 +90,8 @@ document.addEventListener('keydown', (event) => {
     foodIndex = Math.floor(Math.random() * totalCells);
     cells[foodIndex].classList.add('food');
     snake.forEach(index => cells[index].classList.add('snake'));
-    score += 10;
+
+    currentScore = score += 10;
     scoreCount.textContent = `Score: ${score}`;
     
     } else {
@@ -112,12 +103,6 @@ document.addEventListener('keydown', (event) => {
     }
 
 });
-
-const render = () => {
-    if (gameOver) {
-        clearInterval
-    }
-}
 
 
 const resetGame = () => 
@@ -137,53 +122,31 @@ const resetGame = () =>
     scoreCount.textContent = `Score: ${score}`;
 
     gameOver = false;
-    timerStarted = false;
-    clearTimeout(winTimer);
-    gameMessage.classList.add("hidden");
-    timerMessage.classList.add("hidden");
-
+   
 };
 
 
 //state of the game 
 
-const checkGameOver = (newHead) => {
-    // If the head moves off the top or bottom
-    if (newHead < 0 || newHead >= totalCells) {
-        return true; // game over
-    }
+const checkGameOver = (newHead, key) => {
+  // If the head moves off the top or bottom
+  if (
+    newHead < 0 || newHead >= totalCells ||
+    (newHead % 20 === 0 && key === "ArrowRight") ||
+    (newHead % 20 === 19 && key === "ArrowLeft") // changed this one
+  )
+    return true; // game over
+  };
 
-    // Optional: self-collision
-    if (snake.includes(newHead)) {
-       gameMessage.classList.remove("hidden");
-    }
+//restart game function
+  const restartGame = () => {
+    resetGame();
+    gameMessage.classList.add("hidden");
 
-    return false; // no collision
-};
-
-// const init = () => {
-//     gameMessage.classList.add("hidden");
-//     timerMessage.classList.add("hidden");
-
-//     score = 0;
-//     gameOver = false;
-
-// };
-
-
-
-//Game over function 
-//If snake = snake - game over
-// if timer runs out - game over
-// if snake hits border - game over
-
-
-
+    };
 
 reset.addEventListener('click', resetGame);
-//pause.addEventListener('click', pauseGame);
-
-// init();
+pause.addEventListener('click', pauseGame);
 
 
 

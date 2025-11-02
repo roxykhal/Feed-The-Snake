@@ -79,7 +79,6 @@
 
 #message {
   position: fixed;
-  display: none; /* hidden by default */
   width: 100%;
   height: 100%;
   top: 0;
@@ -95,9 +94,23 @@
   text-align: center;
 }
 
+#restartButton {
+  background-color: #dcecdc;
+  border: none;
+  padding: 20px 16px;
+  margin-top: 200px;
+  cursor: pointer;
+  font-size: 28px;
+  border-radius: 5px;
+}
 
-#timerMessage {
+#restartButton:hover {
+  background-color: #90dd72;
+}
+
+.timer-message {
 position: fixed;
+  display: none; /* hidden by default */
   top: 0;
   left: 0;
   width: 100%;
@@ -127,3 +140,11 @@ position: fixed;
     background-color: red;
 }
 
+#timeLeft {
+  font-size: 1.5rem;
+  font-family: 'Courier New', monospace;
+  color: rgb(9, 8, 8);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
