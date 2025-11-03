@@ -1,19 +1,65 @@
-/*---------------------------- Variables (state) ----------------------------*/
-
 let gameOver = false;
 let gameStarted = false;
 let score = 0;
-let paused = false;
+let paused = true;
+let currentDirection = 'ArrowRight'; // default starting direction
 
-
-/*------------------------ Cached Element References ------------------------*/
 const reset = document.querySelector("#resetButton");
 const pause = document.querySelector("#pauseButton");
 const scoreCount = document.querySelector("#score");
 const gameMessage = document.querySelector('#message');
-const restart = document.querySelector('#restartGame');
+const restart = document.querySelector('#restartButton');
 
-// const direction = document.querySelectorAll('#id');
+const modal = document.getElementById('gameModal');
+const closeModal = document.getElementById('closeModal');
+const startButton = document.getElementById('startGame');
+
+const playAgain = document.getElementById('playAgain');
+const closeWin = document.getElementById('closeWinGameModal');
+const winModal = document.getElementById('winModal');
+const finalScore = document.getElementById('finalScore');
+
+//Runs once automatically when the page finishes loading
+document.addEventListener('DOMContentLoaded', () => {
+    modal.style.display = 'flex';
+    
+});
+
+winModal.style.display = 'none';
+
+const checkWinner = () => {
+    if (score >= 80) {
+        winModal.style.display = "flex";
+        finalScore.textContent = score;
+        pauseGame();
+
+    }
+};
+
+//Runs everytime the button is clicked
+closeModal.addEventListener('click', () => {
+    modal.style.display = 'none';
+    startGameLoop();
+});
+
+startButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+    startGameLoop(); // start cleanly
+});
+
+
+closeWin.addEventListener('click', () => {
+    winModal.style.display = 'none';
+    startGameLoop();
+});
+
+
+playAgain.addEventListener('click', () => {
+    winModal.style.display = 'none';
+    startGameLoop();
+});
+
+const direction = document.querySelectorAll('#id');
 
 //Select gameGrid for Html, grid represents container where all game cells are placed 
 const grid = document.getElementById("gameGrid");
@@ -40,70 +86,31 @@ const randomFood = Math.floor(Math.random() * totalCells);
 cells[randomSnake].classList.add('snake');
 cells[randomFood].classList.add('food');
 
-//Storing index of the snake head and food
-//Snake has multiple segments, it grows as we eat so we need to keep track of all its parts and list positions
 let snake = [randomSnake];
 let foodIndex = randomFood;
 let emptyCells = [];
 
-
+//---------------------- Keydown for direction change -----------------------
 
 //keydown on the randomSnake event so that we can move it once initialised
-
 document.addEventListener('keydown', (event) => {
+    const allowedDirections = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+    if (allowedDirections.includes(event.key)) {
 
-
-    if (gameOver) return; // don't move if game is over
-
-    let newHead = snake[0]; //current head position is index 0
-
-    switch (event.key) {
-        case 'ArrowUp':
-            newHead -= 20;
-            break;
-        case 'ArrowDown':
-            newHead += 20;   
-            break;
-        case 'ArrowLeft': 
-            newHead -= 1;
-            break;
-        case 'ArrowRight': 
-            newHead += 1;
-            break;
+        // Prevent reversing direction directly, prevents the snake from reversing into itself
+        if (
+            (event.key === 'ArrowUp' && currentDirection !== 'ArrowDown') ||
+            (event.key === 'ArrowDown' && currentDirection !== 'ArrowUp') ||
+            (event.key === 'ArrowLeft' && currentDirection !== 'ArrowRight') ||
+            (event.key === 'ArrowRight' && currentDirection !== 'ArrowLeft')
+        ) {
+            //if all checks pass, this line changes the snakes directions
+            currentDirection = event.key;
         }
-
-
-    if (checkGameOver(newHead, event.key)) {
-        gameOver = true;
-        gameMessage.classList.remove("hidden");
-        return;
     }
-    
-        //We always move the head forward in the game onto the next square, only if we don't eat we remove the tail. 
-        //we are always adding the new head at the start of the array regardless of the food was eaten, because the snake moves
-        //forward by one cell.
-    snake.forEach(index => cells[index].classList.remove('snake'));
-    snake.unshift(newHead);
-
-    if (newHead === foodIndex) {
-    cells[foodIndex].classList.remove('food');
-    foodIndex = Math.floor(Math.random() * totalCells);
-    cells[foodIndex].classList.add('food');
-    snake.forEach(index => cells[index].classList.add('snake'));
-
-    currentScore = score += 10;
-    scoreCount.textContent = `Score: ${score}`;
-    
-    } else {
-
-    snake.pop();
-    snake.forEach(index => cells[index].classList.add('snake'));
-    
-
-    }
-
 });
 
+//------------------------ Reset Game Function -----------------------------
 
 const resetGame = () => 
 {
@@ -122,11 +129,11 @@ const resetGame = () =>
     scoreCount.textContent = `Score: ${score}`;
 
     gameOver = false;
+    
    
 };
 
 
-//state of the game 
 
 const checkGameOver = (newHead, key) => {
   // If the head moves off the top or bottom
@@ -136,39 +143,86 @@ const checkGameOver = (newHead, key) => {
     (newHead % 20 === 19 && key === "ArrowLeft") // changed this one
   )
     return true; // game over
-  };
+};
 
-//restart game function
-  const restartGame = () => {
+//Move Snake Function
+
+let gameInterval;
+const speed = 300; // move every 300ms
+
+const moveSnake = () => {
+    if (gameOver) return;
+
+    let newHead = snake[0];
+
+    // Move in currentDirection
+    switch (currentDirection) {
+        case 'ArrowUp':
+            newHead -= 20;
+            break;
+        case 'ArrowDown':
+            newHead += 20;
+            break;
+        case 'ArrowLeft':
+            newHead -= 1;
+            break;
+        case 'ArrowRight':
+            newHead += 1;
+            break;
+    }
+
+    if (checkGameOver(newHead, currentDirection)) {
+        gameOver = true;
+        gameMessage.classList.remove("hidden");
+        clearInterval(gameInterval); // stop the game
+        return;
+    }
+
+    snake.forEach(index => cells[index].classList.remove('snake'));
+    snake.unshift(newHead);
+
+    if (newHead === foodIndex) {
+        cells[foodIndex].classList.remove('food');
+        foodIndex = Math.floor(Math.random() * totalCells);
+        cells[foodIndex].classList.add('food');
+        score += 10;
+        scoreCount.textContent = `Score: ${score}`;
+
+        checkWinner();
+
+    } else {
+        snake.pop();
+    }
+
+    snake.forEach(index => cells[index].classList.add('snake'));
+};
+
+const startGameLoop = () => {
+    clearInterval(gameInterval);            // stop any existing loop
+    gameInterval = setInterval(moveSnake, speed); // start fresh
+    paused = false;
+    pause.textContent = 'Pause';
+};
+
+const restartGame = () => {
     resetGame();
     gameMessage.classList.add("hidden");
+    currentDirection = 'ArrowRight'; // reset direction
+    startGameLoop(); // restart properly
+};
 
-    };
+
+const pauseGame = () => {
+    if (!paused) {
+        clearInterval(gameInterval);
+        paused = true;
+        pause.textContent = 'Play';
+    } else {
+        startGameLoop(); // use our helper instead of another interval
+    }
+};
+
 
 reset.addEventListener('click', resetGame);
 pause.addEventListener('click', pauseGame);
 restart.addEventListener('click', restartGame);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// //Event listeners
-// reset.addEventListener("click");
-// pause.addEventListener("click", pauseGame);

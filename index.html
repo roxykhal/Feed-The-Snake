@@ -7,6 +7,24 @@
   <link rel="stylesheet" href="./css/style.css" />
 </head>
 <body>
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h2>Feed the Snake!</h2>
+            <p class="instruction title">How to play?</p>
+            <p class="instruction score">Score: 80 points to win!</p>
+            <p class="hint">Hint: Avoid the sides</p>
+            <button id="startGame">Start Game</button>
+        </div>
+    </div>
+    <div id="winModal" class="modal">
+        <div class="modal-content">
+            <span id="closeWinGameModal" class="close">&times;</span>
+            <h2>You have won!</h2>
+            <p>Your score: <span id="finalScore"></span></p>
+            <button id="playAgain">Play Again</button>
+        </div>
+    </div>
 
   <div class="container">
     <div class="box">
@@ -16,14 +34,12 @@
         <button id="pauseButton">Pause</button>
         <button id="resetButton">Reset</button>
       </div>
-      
+
       <div id="message" class="hidden">
         <p>Game Over!</p>
         <button id="restartButton">Restart</button>
       </div>
 
-      <div id="timerMessage" class="timer-message hidden">You Survived!</div>
-      <div id="timeLeft">Time: 30</div>
     </div>
   </div>
 

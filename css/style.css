@@ -42,20 +42,6 @@
       height: 20px;
       background-color: transparent;
     }
-/* 
-#playButton {
-    position: absolute;
-    font-size: 20x;
-    font-family: 'Courier New', Courier, monospace;
-    width: 100px;
-    height: 50px;
-    border: 4px solid;
-    border-radius: 10px;
-    border-color: rgb(239, 155, 162);
-    background-color: rgb(226, 169, 222);
-    cursor: pointer;
-    
-} */
 
 #pauseButton {
     font-size: 20px;
@@ -77,8 +63,13 @@
  
 }
 
+
+.box {
+  position: relative; 
+}
+
 #message {
-  position: fixed;
+  position: absolute; 
   width: 100%;
   height: 100%;
   top: 0;
@@ -90,14 +81,17 @@
   align-items: center;     /* vertical center */
   font-size: 3rem;
   font-family: 'Courier New', monospace;
-  color: white;
+  color: rgb(153, 19, 19);
   text-align: center;
+  font-weight: bold;
+  align-items: center;
+  flex-direction: column;
 }
 
 #restartButton {
-  background-color: #dcecdc;
+  background-color: #a3f09b;
   border: none;
-  padding: 20px 16px;
+  padding: 10px 10px;
   margin-top: 200px;
   cursor: pointer;
   font-size: 28px;
@@ -105,27 +99,27 @@
 }
 
 #restartButton:hover {
-  background-color: #90dd72;
+  background-color: #7ec186;
 }
 
-.timer-message {
-position: fixed;
-  display: none; /* hidden by default */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  display: flex; /* for centering */
-  justify-content: center;
-  align-items: center;
-  font-size: 3rem;
-  font-family: 'Courier New', monospace;
-  color: white;
-  text-align: center;
-  z-index: 100;
+.instruction.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 
+.instruction.score {
+  font-size: 18px;
+  color: #19873c;
+}
+
+
+
+.hint {
+     font-size: 16px;
+  font-style: italic;
+  color: #ff0000;
+}
 
 
 .hidden {
@@ -140,11 +134,63 @@ position: fixed;
     background-color: red;
 }
 
-#timeLeft {
-  font-size: 1.5rem;
-  font-family: 'Courier New', monospace;
-  color: rgb(9, 8, 8);
+/* Modal overlay */
+.modal {
+  display: none; /* hide by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal content box */
+.modal-content {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 80%;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
 }
+
+/* Start button styling */
+#startGame {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#startGame:hover {
+  background-color: #45a049;
+}
+
+#playAgain{
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
