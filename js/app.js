@@ -88,7 +88,6 @@ cells[randomFood].classList.add('food');
 
 let snake = [randomSnake];
 let foodIndex = randomFood;
-let emptyCells = [];
 
 //---------------------- Keydown for direction change -----------------------
 
