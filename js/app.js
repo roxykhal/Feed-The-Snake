@@ -163,6 +163,7 @@ const moveSnake = () => {
         gameOver = true;
         gameMessage.classList.remove("hidden");
         playSound('gameover');
+        pauseSound('background');
         clearInterval(gameInterval); // stop the game
         return;
     }
